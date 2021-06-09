@@ -14,11 +14,9 @@ public class DataBase {
     public static void connect(int i) {
         try {
             document = Jsoup.connect("https://www.kinopoisk.ru/lists/top250/?sort=title&page=" + i + "&tab=all").get();
-
         } catch (IOException e) {
             e.printStackTrace();
-        }
-    }
+        }}
 
     public static String StartBase() throws SQLException {
 

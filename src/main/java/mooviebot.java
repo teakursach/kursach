@@ -1,57 +1,32 @@
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
-import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
-import org.telegram.telegrambots.meta.api.objects.File;
-import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ForceReplyKeyboard;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class mooviebot extends TelegramLongPollingBot {
-
-
-    private static ArrayList<String> new_country;
     private final String botUserName = "VkKusvowBot";
-    private final String botToken = "1439301783:AAHuMngYATbvrc4OywKv7nMtRQj2n5kmViA";
-
-
+    private final String botToken = "";
 
     @Override
     public String getBotUsername() {
         return botUserName;
     }
-
     @Override
     public String getBotToken() {
         return botToken;
     }
-
-
     @Override
     public void onUpdateReceived(Update update) {   // как бот будет реагировать на новое сообщение
-
         if (update.hasMessage()) {
             if (update.getMessage().hasText()) {
                 try {
@@ -61,7 +36,6 @@ public class mooviebot extends TelegramLongPollingBot {
                 }
             }
         }else if (update.hasCallbackQuery()) {
-
             String calls = update.getCallbackQuery().getData();
             long messageId = update.getCallbackQuery().getMessage().getMessageId();
             long chatId = update.getCallbackQuery().getMessage().getChatId();
@@ -71,8 +45,9 @@ public class mooviebot extends TelegramLongPollingBot {
                 EditMessageText editMessageText = new EditMessageText();
                 editMessageText.setChatId(String.valueOf(chatId));
                 editMessageText.setMessageId((int) messageId);
+                System.out.println("test1 " + editMessageText);
                 editMessageText.setText("continue");
-
+                System.out.println("test2 " + editMessageText);
                 try {
                     execute(editMessageText);
                 } catch (TelegramApiException e) {
@@ -96,10 +71,11 @@ public class mooviebot extends TelegramLongPollingBot {
     }
 
 
-
+    /* ВЛОЖЕННЫЕ КЛАВИАТУРЫ
+            Пока я нашёл только один вариант - делать не вложенные if .
+            Т.к он просто туда не заходит из-за того, что передаваемое сообщение не изменяется внутри функции getMessage()
+             */
     public SendMessage sendMessage(Update update) {
-
-
         int stage250 = -1;
         if (update.getMessage().getText().equals("/start")) {
             return start(update.getMessage().getChatId());
@@ -112,57 +88,37 @@ public class mooviebot extends TelegramLongPollingBot {
         } else if(update.getMessage().getText().equals("Список фильмов"))
         {
             return ListFilm(update.getMessage().getChatId());
-        }else
-        {
-
-        }
-
-        /* ВЛОЖЕННЫЕ КЛАВИАТУРЫ
-        Пока я нашёл только один вариант - делать не вложенные if .
-        Т.к он просто туда не заходит из-за того, что передаваемое сообщение не изменяется внутри функции getMessage()
-         */
+        }else {}
         SendMessage sendMessage = new SendMessage();
         sendMessage.setText("К сожалению нам не удалось распознать вашу команду");
         sendMessage.setChatId(String.valueOf(update.getMessage().getChatId()));
         return sendMessage;
     }
-
-    private InlineKeyboardMarkup setInline(String msg) //функция для прикрепления мини-опросика к фильму(да/нет/следующий)
-    {
-        if (msg.equals("Top-film")) {
-            InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();  //создаем переменные, куда мы будем записывать наши кнопки к сообщению
+    //функция для прикрепления мини-опросика к фильму(да/нет/следующий)
+    private InlineKeyboardMarkup setInline(String msg) { if (msg.equals("Top-film")) {
+            InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();              //создаем переменные, куда мы будем записывать наши кнопки к сообщению
             InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
             InlineKeyboardButton inlineKeyboardButton1 = new InlineKeyboardButton();
             List<InlineKeyboardButton> keyboardButtonsRow1 = new ArrayList<>();
             List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
-
-            inlineKeyboardButton.setText("Да");
-            inlineKeyboardButton.setCallbackData("Да");
+            inlineKeyboardButton.setText("Да"); inlineKeyboardButton.setCallbackData("Да");
             inlineKeyboardButton1.setText("Нет, еще что-нибудь");
             inlineKeyboardButton1.setCallbackData("Нет, еще что-нибудь");
-            ;
             keyboardButtonsRow1.add(inlineKeyboardButton);
             keyboardButtonsRow1.add(inlineKeyboardButton1);
             rowList.add(keyboardButtonsRow1);
             inlineKeyboardMarkup.setKeyboard(rowList);
-            return inlineKeyboardMarkup;
-        }
-        return null;
-    }
-
-    private SendMessage start(long chatId) //основная менюшка для бота(под комманду /start)
-    {
+            return inlineKeyboardMarkup; } return null; }
+    //основная менюшка для бота(под комманду /start)
+    private SendMessage start(long chatId) {
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
         ArrayList<KeyboardRow> keyboard = new ArrayList<>();
         KeyboardRow keyboardRow1 = new KeyboardRow();
         KeyboardRow keyboardRow2 = new KeyboardRow();
         KeyboardRow keyboardRow3 = new KeyboardRow();
-
         replyKeyboardMarkup.setSelective(true); //показ клав только определенным пользователям
-        replyKeyboardMarkup.setOneTimeKeyboard(false);//скрыть клавиатуру после использования
+        replyKeyboardMarkup.setOneTimeKeyboard(false); //скрыть клавиатуру после использования
         replyKeyboardMarkup.setResizeKeyboard(true); //высота клавиатуры
-
-
         keyboardRow1.clear();
         keyboardRow2.clear();
         keyboard.clear();
