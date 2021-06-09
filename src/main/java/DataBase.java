@@ -129,7 +129,7 @@ public class DataBase {
     {
         final String user = "postgres";
         final String password = "";
-        final String url = "jdbc:postgresql://localhost:5432/films";
+        final String url = "https://addons-sso.heroku.com/apps/5f493c1e-e309-4ec5-80fb-92cc6a69cdb1/addons/58740c68-8945-4f77-9e5e-b1c22660d342";
         ArrayList<kinopoisk> returned = new ArrayList<kinopoisk>();
 
         final Connection connection = DriverManager.getConnection(url, user, password);
@@ -157,7 +157,7 @@ public class DataBase {
     {
         final String user = "postgres";
         final String password = "";
-        final String url = "jdbc:postgresql://localhost:5432/films";
+        final String url = "https://addons-sso.heroku.com/apps/5f493c1e-e309-4ec5-80fb-92cc6a69cdb1/addons/58740c68-8945-4f77-9e5e-b1c22660d342";
         ArrayList<kinopoisk> returned = new ArrayList<kinopoisk>();
 
         final Connection connection = DriverManager.getConnection(url, user, password);
