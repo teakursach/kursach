@@ -98,9 +98,9 @@ public class DataBase {
 
     public static ArrayList<kinopoisk> getName() throws SQLException //возвращает список всех фильмов, отсортированы по алфавиту
     {
-        final String user = "postgres";
-        final String password = "";
-        final String url = "jdbc:postgresql://localhost:5432/films";
+       final String user = "sbuhteoxvvetdi";
+                final String password = "ff8d2eda15c967e777c29c5d5ff9dd76c690851ce0ad055c6fc4c771a049d11f";
+                final String url = "jdbc:postgresql://ec2-54-74-60-70.eu-west-1.compute.amazonaws.com:5432/films";
         ArrayList<kinopoisk> returned = new ArrayList<kinopoisk>();
 
         final Connection connection = DriverManager.getConnection(url, user, password);
